@@ -4,7 +4,7 @@ import javax.sql.DataSource;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
-import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
+//import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
 import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
@@ -19,13 +19,13 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 @Configuration
-//@EnableBatchProcessing
+
 public class BatchConfiguration {
 	
 	
 	@Autowired
 	private DataSource dataSource;
-////	
+	
 	@Bean
 	public DataSourceTransactionManager transactionManager() {
 		return new DataSourceTransactionManager(dataSource);
@@ -33,20 +33,22 @@ public class BatchConfiguration {
 	
 	@Bean
 	public FlatFileItemReader<Person> reader() {
-		System.out.print("Reader");
+		System.out.println("Reader");
 	  return new FlatFileItemReaderBuilder<Person>()
 	    .name("personItemReader")
 	    .resource(new ClassPathResource("sample-data.csv"))
 	    .delimited()
 	    .names("firstName", "lastName")
+//	    .filters(new RecordFilter())
 	    .targetType(Person.class)
 	    .build();
 	}
 
 	@Bean
 	public PersonItemProcessor processor() {
-		System.out.print("Processor");
+		System.out.println("Processor");
 	  return new PersonItemProcessor();
+
 	}
 
 	@Bean
@@ -69,8 +71,8 @@ public class BatchConfiguration {
 	}
 
 	@Bean
-	public Step step1(JobRepository jobRepository, DataSourceTransactionManager transactionManager,
-	          FlatFileItemReader<Person> reader, PersonItemProcessor processor, JdbcBatchItemWriter<Person> writer) {
+	public Step step1(FlatFileItemReader<Person> reader,PersonItemProcessor processor,JdbcBatchItemWriter<Person> writer,JobRepository jobRepository, DataSourceTransactionManager transactionManager) 
+	{
 		System.out.println("step1");
 	  return new StepBuilder("step1", jobRepository)
 	    .<Person, Person> chunk(3, transactionManager)

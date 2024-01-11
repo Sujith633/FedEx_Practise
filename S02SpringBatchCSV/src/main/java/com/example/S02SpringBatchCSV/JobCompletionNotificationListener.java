@@ -1,4 +1,4 @@
-package com.example.S01SpringBatch;
+package com.example.S02SpringBatchCSV;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
