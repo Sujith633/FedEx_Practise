@@ -46,6 +46,7 @@ public class BatchConfiguration {
 		return new DataSourceTransactionManager(dataSource);
 	}
 	
+	
 	@Bean
 	public MultiResourceItemReader<Person> multiResourceItemReader() {
 	    MultiResourceItemReader<Person> resourceItemReader = new MultiResourceItemReader<Person>();
@@ -61,7 +62,7 @@ public class BatchConfiguration {
 	  return new FlatFileItemReaderBuilder<Person>()
 	    .name("personItemReader")
 	    .delimited()
-	    .names("firstName", "lastName")
+	    .names("id", "name", "email","address","phonenum","age","salary")
 	    .targetType(Person.class)
 	    .build();
 	}
@@ -77,7 +78,7 @@ public class BatchConfiguration {
 	            setDelimiter(",");
 	            setFieldExtractor(new BeanWrapperFieldExtractor<Person>() {
 	                {
-	                    setNames(new String[] {"firstName", "lastName"});
+	                    setNames(new String[] {"id", "name", "email","address","phonenum","age","salary"});
 	                    log.info("");
 	                }
 	            });

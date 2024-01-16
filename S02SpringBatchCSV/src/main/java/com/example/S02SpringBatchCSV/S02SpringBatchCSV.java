@@ -11,6 +11,5 @@ public class S02SpringBatchCSV {
 		SpringApplication.run(S02SpringBatchCSV.class, args);
 	
 	}
-
 }
 
