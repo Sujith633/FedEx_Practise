@@ -12,11 +12,17 @@ import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
 import org.springframework.batch.item.file.FlatFileItemReader;
+import org.springframework.batch.item.file.FlatFileItemWriter;
+import org.springframework.batch.item.file.MultiResourceItemReader;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
+import org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor;
+import org.springframework.batch.item.file.transform.DelimitedLineAggregator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 @Configuration
@@ -32,34 +38,49 @@ public class BatchConfiguration {
 	
 		return new DataSourceTransactionManager(dataSource);
 	}
+	@Bean
+	public MultiResourceItemReader<Person> multiResourceItemReader() {
+	    MultiResourceItemReader<Person> resourceItemReader = new MultiResourceItemReader<Person>();
+	    resourceItemReader.setResources(new Resource[] { new ClassPathResource("inputData.csv"), new ClassPathResource("student-details.csv") });
+	    resourceItemReader.setDelegate(reader());
+	    return resourceItemReader;
+	}
+	
 	
 	@Bean
 	public FlatFileItemReader<Person> reader() {
 		System.out.print("Reader");
 	  return new FlatFileItemReaderBuilder<Person>()
 	    .name("personItemReader")
-	    .resource(new ClassPathResource("inputdata.csv"))
+	   // .resource(new ClassPathResource("outputdata.csv"))
 	    .delimited()
-	    .names("firstName", "lastName")
+	    .names("ID","Name","Email","Phone","Address","Age","Salary")
 	    .targetType(Person.class)
 	    .build();
 	}
-	
 	@Bean
 	public PersonItemProcessor processor() {
 		System.out.print("Processor");
 	  return new PersonItemProcessor();
 	}
-	@Bean
-	public JdbcBatchItemWriter<Person> writer(DataSource dataSource) {
-		System.out.println("Writer");
-	  return new JdbcBatchItemWriterBuilder<Person>()
-	    .sql("INSERT INTO people (first_name, last_name) VALUES (:firstName, :lastName)")
-	    .dataSource(dataSource)
-	    .beanMapped()
-	    .build();
-	}
 	
+	@Bean
+	public FlatFileItemWriter<Person> writer() {
+	    FlatFileItemWriter<Person> writer = new FlatFileItemWriter<Person>();
+	    writer.setResource(new FileSystemResource("output2.csv"));
+	    writer.setLineAggregator(new DelimitedLineAggregator<Person>() {
+	        {
+	            setDelimiter(",");
+	            setFieldExtractor(new BeanWrapperFieldExtractor<Person>() {
+	                {
+	                    setNames(new String[] {"ID","Name","Email","Phone","Address","Age","Salary"});
+	                }
+	            });
+	        }
+	    });
+//	    System.out.println("outputttt");
+	    return writer;
+	}
 	@Bean
 	public Job importUserJob(JobRepository jobRepository,Step step1, JobCompletionNotificationListener listener) {
 		System.out.println("Job Repository");
@@ -71,11 +92,11 @@ public class BatchConfiguration {
 
 	@Bean
 	public Step step1(JobRepository jobRepository, DataSourceTransactionManager transactionManager,
-	          FlatFileItemReader<Person> reader, PersonItemProcessor processor, JdbcBatchItemWriter<Person> writer) {
+	          FlatFileItemReader<Person> reader, PersonItemProcessor processor,FlatFileItemWriter<Person> writer) {
 		System.out.println("step1");
 	  return new StepBuilder("step1", jobRepository)
 	    .<Person, Person> chunk(3, transactionManager)
-	    .reader(reader)
+	    .reader(multiResourceItemReader())
 	    .processor(processor)
 	    .writer(writer)
 	    .build();
