@@ -74,6 +74,7 @@ public class Person{
 		this.age = age;
 		this.salary = salary;
 	}
+	
 	public Person() {
 		super();
 		// TODO Auto-generated constructor stub

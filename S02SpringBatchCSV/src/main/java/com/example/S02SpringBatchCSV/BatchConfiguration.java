@@ -1,8 +1,6 @@
 package com.example.S02SpringBatchCSV;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.sql.DataSource;
 
@@ -15,12 +13,9 @@ import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
-import org.springframework.batch.item.database.JdbcBatchItemWriter;
-import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.batch.item.file.MultiResourceItemReader;
-import org.springframework.batch.item.file.ResourceAwareItemReaderItemStream;
 import org.springframework.batch.item.file.builder.FlatFileItemReaderBuilder;
 import org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor;
 import org.springframework.batch.item.file.transform.DelimitedLineAggregator;
@@ -60,9 +55,9 @@ public class BatchConfiguration {
 	public FlatFileItemReader<Person> reader() {
 		System.out.println("Reader");
 	  return new FlatFileItemReaderBuilder<Person>()
-	    .name("personItemReader")
+	    .name("multiResourceItemReader")
 	    .delimited()
-	    .names("id", "name", "email","address","phonenum","age","salary")
+	    .names("id", "name", "email","phonenum","address","age","salary")
 	    .targetType(Person.class)
 	    .build();
 	}
@@ -78,8 +73,7 @@ public class BatchConfiguration {
 	            setDelimiter(",");
 	            setFieldExtractor(new BeanWrapperFieldExtractor<Person>() {
 	                {
-	                    setNames(new String[] {"id", "name", "email","address","phonenum","age","salary"});
-	                    log.info("");
+	                    setNames(new String[] {"id", "name", "email","phonenum","address","age","salary"});
 	                }
 	            });
 	        }
@@ -114,6 +108,5 @@ public class BatchConfiguration {
 	public PersonItemProcessor processor() {
 		System.out.println("Processor");
 	  return new PersonItemProcessor();
-
 	}
 }

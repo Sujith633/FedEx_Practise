@@ -15,57 +15,68 @@ import org.springframework.core.io.FileSystemResource;
 
 public class PersonItemProcessor implements ItemProcessor<Person, Person>{
 
-	 private static final Logger log = LoggerFactory.getLogger(PersonItemProcessor.class);
-
-//	 private Set<String> existingRecords = new HashSet<>();
 	 private Set<Long> commonRecords = new HashSet<>();
+	 private Set<Long> existingRecords = new HashSet<>();
 	 
-//	 	public void afterPropertiesSet() throws Exception {
-//	 		int i = 0;
-//	        // Load existing records from the output file
+//	 	public Person afterPropertiesSet(Person item) throws Exception {
+//	        // Loading existing records from the output file
 //	        FlatFileItemReader<Person> reader = new FlatFileItemReader<>();
 //	        reader.setResource(new FileSystemResource("outputdata.csv"));
 //	        reader.setLineMapper(new DefaultLineMapper<Person>() {
 //	            {
 //	                setLineTokenizer(new DelimitedLineTokenizer() {
 //	                    {
-//	                        setNames(new String[]{ "firstName", "lastName"});
+//	                        setNames(new String[]{"id", "name", "email","phonenum","address","age","salary"});
 //	                    }
 //	                });
 //	                setFieldSetMapper(new BeanWrapperFieldSetMapper<Person>() {
 //	                    {
-////	                    	i++;
 //	                        setTargetType(Person.class);
-//	                        log.info("i"+Person.class);
 //	                    }
 //	                });
 //	            }
 //	        });
 //	        
-//	       
-//
-//	        Person item;
+////	        System.out.println(existingRecords);
+////	        if (existingRecords.contains(item)) {
+////	        	return item;
+////	        }
+////	        else {
+////	        	existingRecords.add(item.getId());
+////	        	return null;
+////	        }
+//	        	
 //	        reader.open(new ExecutionContext());
 //	        while ((item = reader.read()) != null) {
-//	            existingRecords.add(item.getFirstName());
+//	            existingRecords.add(item.getId());
 //	        }
-////	        System.out.println("Hello"+existingRecords);
 //	        reader.close();
+//			return null;
+//			
 //	    }
-	 	
-	 	 public  Person commonNames(Person item) throws Exception{
-	 		 
-	 		 if(commonRecords.contains(item.getId())) {
+//	 	
+//	 	 public  Person commonNames(Person item) throws Exception{
+//	 		 if(commonRecords.contains(item.getId())) {
+//	 			 System.out.println(item);
+//	 			 return item;
+//	 		 }
+//	 		 commonRecords.add(item.getId());
+////	 		 System.out.println(commonRecords);
+//			return null;
+//	 		 
+//	 	 }
+//
+//	 	 
+	    @Override
+	    public Person process(Person item) throws Exception {
+//	    	afterPropertiesSet(item);
+	    	if(existingRecords.contains(item.getId())) {
 	 			 System.out.println(item);
 	 			 return item;
 	 		 }
-	 		 commonRecords.add(item.getId());
-			return null;
-	 		 
-	 	 }
-
-	    @Override
-	    public Person process(Person item) throws Exception {
-	    	return commonNames(item);	
+	    	else {
+	    		existingRecords.add(item.getId());
+				return null;
+	    	}	
 	    }
 }
