@@ -31,7 +31,7 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
 public class BatchConfiguration {
 	
-	 private static final Logger log = LoggerFactory.getLogger(BatchConfiguration.class);
+//	 private static final Logger log = LoggerFactory.getLogger(BatchConfiguration.class);
 	 
 	@Autowired
 	private DataSource dataSource;
@@ -55,7 +55,7 @@ public class BatchConfiguration {
 	public FlatFileItemReader<Person> reader() {
 		System.out.println("Reader");
 	  return new FlatFileItemReaderBuilder<Person>()
-	    .name("multiResourceItemReader")
+	    .name("MultiResourceItemReader")
 	    .delimited()
 	    .names("id", "name", "email","phonenum","address","age","salary")
 	    .targetType(Person.class)
@@ -67,7 +67,6 @@ public class BatchConfiguration {
 
 	    FlatFileItemWriter<Person> writer = new FlatFileItemWriter<Person>();
 	    writer.setResource(new FileSystemResource("outputdata.csv"));
-	    writer.setAppendAllowed(true);
 	    writer.setLineAggregator(new DelimitedLineAggregator<Person>() {
 	        {
 	            setDelimiter(",");
@@ -83,11 +82,11 @@ public class BatchConfiguration {
 	}
 
 	@Bean
-	public Job importUserJob(JobRepository jobRepository,Step step1,Step step2, JobCompletionNotificationListener listener) {
+	public Job importUserJob(JobRepository jobRepository,Step step1) {
 		System.out.println("Job Repository");
 	  return new JobBuilder("importUserJob", jobRepository)
 		.incrementer(new RunIdIncrementer())
-	    .listener(listener)
+//	    .listener(listener)
 	    .start(step1)
 	    .build();
 	}
