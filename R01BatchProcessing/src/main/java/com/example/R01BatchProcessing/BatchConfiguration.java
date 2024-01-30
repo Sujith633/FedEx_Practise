@@ -2,7 +2,6 @@ package com.example.R01BatchProcessing;
 
 
 import javax.sql.DataSource;
-
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -52,7 +51,6 @@ public class BatchConfiguration {
 		System.out.print("Reader");
 	  return new FlatFileItemReaderBuilder<Person>()
 	    .name("personItemReader")
-	   // .resource(new ClassPathResource("outputdata.csv"))
 	    .delimited()
 	    .names("ID","Name","Email","Phone","Address","Age","Salary")
 	    .targetType(Person.class)
@@ -78,14 +76,12 @@ public class BatchConfiguration {
 	            });
 	        }
 	    });
-//	    System.out.println("outputttt");
 	    return writer;
 	}
 	@Bean
-	public Job importUserJob(JobRepository jobRepository,Step step1, JobCompletionNotificationListener listener) {
+	public Job importUserJob(JobRepository jobRepository,Step step1) {
 		System.out.println("Job Repository");
-	  return new JobBuilder("importUserJob", jobRepository)
-	    .listener(listener)
+	  return new JobBuilder("importUserJob", jobRepository)	   
 	    .start(step1)
 	    .build();
 	}
@@ -95,7 +91,7 @@ public class BatchConfiguration {
 	          FlatFileItemReader<Person> reader, PersonItemProcessor processor,FlatFileItemWriter<Person> writer) {
 		System.out.println("step1");
 	  return new StepBuilder("step1", jobRepository)
-	    .<Person, Person> chunk(3, transactionManager)
+	    .<Person, Person> chunk(10, transactionManager)
 	    .reader(multiResourceItemReader())
 	    .processor(processor)
 	    .writer(writer)

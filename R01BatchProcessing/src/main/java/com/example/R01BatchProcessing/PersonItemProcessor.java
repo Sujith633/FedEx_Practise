@@ -20,7 +20,7 @@ public class PersonItemProcessor implements ItemProcessor<Person, Person>{
 	    public Person process(Person item) throws Exception {
 	    	
 	    	 if(commonRecords.contains(item.getID())) {
-	 			 System.out.println(item);
+	 			 //System.out.println("Thank you");
 	 			 return item;
 	 		 }
 	 		 commonRecords.add(item.getID());
