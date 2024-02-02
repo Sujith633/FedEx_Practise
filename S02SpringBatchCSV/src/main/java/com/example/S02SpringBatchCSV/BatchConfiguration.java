@@ -13,6 +13,7 @@ import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
+import org.springframework.batch.item.ExecutionContext;
 import org.springframework.batch.item.file.FlatFileItemReader;
 import org.springframework.batch.item.file.FlatFileItemWriter;
 import org.springframework.batch.item.file.MultiResourceItemReader;
@@ -66,6 +67,7 @@ public class BatchConfiguration {
 	public FlatFileItemWriter<Person> writer(List<Person> items) {
 
 	    FlatFileItemWriter<Person> writer = new FlatFileItemWriter<Person>();
+//	    writer.open(new ExecutionContext());
 	    writer.setResource(new FileSystemResource("outputdata.csv"));
 	    writer.setLineAggregator(new DelimitedLineAggregator<Person>() {
 	        {
@@ -96,7 +98,7 @@ public class BatchConfiguration {
 	{
 		System.out.println("step1");
 	  return new StepBuilder("step1", jobRepository)
-	    .<Person, Person> chunk(3, transactionManager)
+	    .<Person, Person> chunk(30, transactionManager)
 	    .reader(multiResourceItemReader())
 	    .processor(processor)
 	    .writer(writer)

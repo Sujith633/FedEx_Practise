@@ -18,8 +18,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 
-@Configuration
 
+@Configuration
 public class BatchConfiguration {
 	
 	
@@ -39,7 +39,6 @@ public class BatchConfiguration {
 	    .resource(new ClassPathResource("sample-data.csv"))
 	    .delimited()
 	    .names("firstName", "lastName")
-//	    .filters(new RecordFilter())
 	    .targetType(Person.class)
 	    .build();
 	}
@@ -75,7 +74,7 @@ public class BatchConfiguration {
 	{
 		System.out.println("step1");
 	  return new StepBuilder("step1", jobRepository)
-	    .<Person, Person> chunk(3, transactionManager)
+	    .<Person, Person> chunk(05, transactionManager)
 	    .reader(reader)
 	    .processor(processor)
 	    .writer(writer)

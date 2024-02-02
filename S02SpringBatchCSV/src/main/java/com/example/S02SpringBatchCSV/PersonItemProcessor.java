@@ -54,7 +54,7 @@ public class PersonItemProcessor implements ItemProcessor<Person, Person> {
         while ((item = reader.read()) != null) {
             existingRecords.add(item.getId());
         }
-        System.out.println("Hello"+existingRecords);
+//        System.out.println("Hello"+existingRecords);
         reader.close();
     }
  	
@@ -62,7 +62,7 @@ public class PersonItemProcessor implements ItemProcessor<Person, Person> {
     @Override
     public Person process(Person item) throws Exception {
         if (commonRecords.contains(item.getId()) && !existingRecords.contains(item.getId())) {
-            System.out.println(existingRecords.contains(item.getId()));
+//            System.out.println(existingRecords.contains(item.getId()));
             afterPropertiesSet();
 //            existingRecords.add(item.getId());
             return item;

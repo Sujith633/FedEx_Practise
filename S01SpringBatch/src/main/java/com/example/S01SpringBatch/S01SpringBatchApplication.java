@@ -12,6 +12,7 @@ public class S01SpringBatchApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(S01SpringBatchApplication.class, args);
 		
+		
 	}
 
 }

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class BatchScheduling {
+	int i = 0;
 	
 	@Autowired
     JobLauncher jobLauncher;
@@ -20,7 +21,8 @@ public class BatchScheduling {
  
     @Scheduled(cron = "0 */1 * * * ?")
     public void perform() throws Exception {
-    	System.out.println("TAsk Sceduled");
+    	
+    	System.out.println("Task Sceduled");
         JobParameters params = new JobParametersBuilder()
             .addString("JobID", String.valueOf(System.currentTimeMillis()))
             .toJobParameters();
@@ -28,7 +30,9 @@ public class BatchScheduling {
         	if(jb.getStatus().isUnsuccessful()) {
         		System.out.println("Unsucess");
         	}
-        	else
-        		System.out.println("Successfull");
+        	else{
+        		i++;
+        		System.out.println("Successfull"+i);
+        	}
     }
 }

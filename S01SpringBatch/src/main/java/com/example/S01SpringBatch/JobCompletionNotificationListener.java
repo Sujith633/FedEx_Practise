@@ -16,16 +16,13 @@ public class JobCompletionNotificationListener implements JobExecutionListener{
 
 	  private final JdbcTemplate jdbcTemplate;
 	  
-	  
 	  public JobCompletionNotificationListener(JdbcTemplate jdbcTemplate) {
-		  System.out.println("Welcome");
 	    this.jdbcTemplate = jdbcTemplate;
 	  }
 	  
 	  
 	  @Override
 	  public void afterJob(JobExecution jobExecution) {
-		  System.out.println("Thankyou");
 		  
 	    if(jobExecution.getStatus() == BatchStatus.COMPLETED) {
 	      log.info("!!! JOB FINISHED! Time to verify the results");
