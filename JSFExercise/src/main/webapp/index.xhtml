@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+<body>
+	<h1>Employee Sign Up</h1><br/>
+	<h:form>
+		Full Name: <h:inputText id="name" value="#{employee.name}"/><br/>
+		Age : <h:inputText id="age" value="#{employee.age}"/><br/>
+		Gender : <h:selectOneRadio>
+			<f:selectItem  itemLabel="male" itemValue="#{employee.gender}"/>
+			<f:selectItem  itemLabel="female" itemValue="#{employee.gender}"/>
+		</h:selectOneRadio>
+		
+		Status :<h:selectOneMenu>
+			<f:selectItem  itemLabel="married" itemValue="#{employee.status}"/>
+			<f:selectItem  itemLabel="unmarried" itemValue="#{employee.status}"/>
+		</h:selectOneMenu><br/>
+		
+		Pin Code : <h:inputText id="pin" value="#{employee.pin}"/><br/>
+		Employee Description : <h:inputText id="description" value = "#{employee.description}"/><br/>
+		
+		<h:commandButton id="details" action="employeeDetails" />
+	</h:form>
+
+</body>
+</html>
